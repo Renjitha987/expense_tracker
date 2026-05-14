@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # Initialize DB
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('/tmp/database.db')
     conn.execute('''CREATE TABLE IF NOT EXISTS expenses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                  title TEXT,
@@ -17,7 +17,7 @@ init_db()
 # Home page
 @app.route('/')
 def index():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('/tmp/database.db')
     expenses = conn.execute('SELECT * FROM expenses').fetchall()
     
     total = sum([row[2] for row in expenses])
@@ -31,7 +31,7 @@ def add():
     title = request.form['title']
     amount = request.form['amount']
 
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('/tmp/database.db')
     conn.execute("INSERT INTO expenses (title, amount) VALUES (?, ?)", (title, amount))
     conn.commit()
     conn.close()
@@ -41,7 +41,7 @@ def add():
 # Delete expense
 @app.route('/delete/<int:id>')
 def delete(id):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('/tmp/database.db')
     conn.execute("DELETE FROM expenses WHERE id=?", (id,))
     conn.commit()
     conn.close()
