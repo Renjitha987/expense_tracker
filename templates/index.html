@@ -1,26 +1,388 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 3px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: #1a1a1a;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 11px 16px;
+            background-color: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.15);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0.5px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .expenses-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background-color: #1e40af;
+            border-radius: 2px;
+        }
+
+        .expenses-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .expense-item {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-left: 4px solid #1e40af;
+        }
+
+        .expense-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-color: #1e3a8a;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            font-size: 0.95em;
+        }
+
+        .expense-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .btn-delete {
+            padding: 8px 14px;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 16px;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 30px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .empty-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .empty-text {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .empty-subtext {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .form-group:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .expense-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-delete {
+                margin-left: 0;
+                margin-top: 12px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .form-group {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 1.6em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Expense Tracker</h1>
+    <header>
+        <div class="header-content">
+            <h1>Expense Tracker</h1>
+            <p class="subtitle">Manage and track your daily expenses efficiently</p>
+        </div>
+    </header>
 
-    <form method="POST" action="/add">
-        <input type="text" name="title" placeholder="Expense name">
-        <input type="number" step="0.01" name="amount" placeholder="Amount">
-        <button type="submit">Add</button>
-    </form>
+    <div class="main-container">
+        <div class="layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Add Expense Form -->
+                <div class="card">
+                    <div class="card-title">Add New Expense</div>
+                    <form method="POST" action="/add">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" name="title" placeholder="e.g., Groceries, Gas, Rent" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (₹)</label>
+                            <input type="number" step="0.01" name="amount" placeholder="0.00" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Add Expense</button>
+                    </form>
+                </div>
 
-    <h3>Total: ₹ {{ total }}</h3>
+                <!-- Total Statistics -->
+                <div class="card">
+                    <div class="card-title">Summary</div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Total Expenses</div>
+                            <div class="stat-value">₹ {{ total }}</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
 
-    <ul>
-        {% for exp in expenses %}
-        <li>
-            {{ exp[1] }} - ₹{{ exp[2] }}
-            <a href="/delete/{{ exp[0] }}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
+            <!-- Main Content -->
+            <main class="expenses-container">
+                <div class="card">
+                    {% if expenses %}
+                        <div class="section-title">Recent Expenses</div>
+                        <ul class="expenses-list">
+                            {% for exp in expenses %}
+                            <li class="expense-item">
+                                <div class="expense-info">
+                                    <div class="expense-name">{{ exp[1] }}</div>
+                                    <div class="expense-value">₹ {{ "%.2f"|format(exp[2]) }}</div>
+                                </div>
+                                <a href="/delete/{{ exp[0] }}" class="btn-delete">Delete</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">📊</div>
+                            <p class="empty-text">No expenses recorded yet</p>
+                            <p class="empty-subtext">Start by adding your first expense in the form on the left</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </main>
+        </div>
+    </div>
 </body>
 </html>
